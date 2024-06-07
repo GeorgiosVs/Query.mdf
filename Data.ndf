@@ -1,0 +1,187 @@
+CREATE DATABASE Mustic_store;
+
+CREATE TABLE Artist (Artistid INT PRIMARY KEY, ArtistName VARCHAR(60));
+
+CREATE TABLE Album (
+  Albumid INT PRIMARY KEY,
+  title VARCHAR(50),
+  Artistid INT,
+  FOREIGN KEY (Artistid) REFERENCES Artist(Artistid)
+                   );
+
+CREATE TABLE MediaType (MediaTypeid INT PRIMARY KEY, MediaTypeName VARCHAR(50));
+
+CREATE TABLE Genre (Genreid INT PRIMARY KEY, GenreName VARCHAR(50));
+
+CREATE TABLE Track (
+  Trackid INT PRIMARY KEY,
+  TrackName VARCHAR(50),
+  Albumid INT,
+  FOREIGN KEY (Albumid) REFERENCES Album(Albumid),
+  MediaTypeid INT,
+  FOREIGN KEY (MediaTypeid) REFERENCES MediaType(MediaTypeid),
+  Genreid INT,
+  FOREIGN KEY (Genreid) REFERENCES Genre(Genreid),
+  Composer VARCHAR(50),
+  Milliseconds INT,
+  Bytes INT,
+  UnitPrice DECIMAL(10,2)
+);
+
+
+
+CREATE TABLE Playlist (Playlistid INT PRIMARY KEY,
+                      PlaylistName VARCHAR(50));
+
+CREATE TABLE PlaylistTrack (Playlistid INT,
+                           Trackid INT,
+                           FOREIGN KEY (Playlistid) REFERENCES Playlist(Playlistid),
+                           FOREIGN KEY (Trackid) REFERENCES Track(Trackid));
+
+
+
+CREATE TABLE Employee (Employeeid INT PRIMARY KEY,
+                      LastName VARCHAR(50),
+                      FirstName VARCHAR(50),
+                      Title VARCHAR(50),
+                      ReportsTo INT,
+                      FOREIGN KEY (ReportsTo) REFERENCES Employee(Employeeid),
+                      BirthDate DATE,
+                      HireDate DATE,
+                      Address VARCHAR(60),
+                      City VARCHAR(50),
+                      State VARCHAR(50),
+                      Country VARCHAR(50),
+                      PostalCode INT,
+                      Phone VARCHAR(30),
+                      Fax VARCHAR(30),
+                      Email VARCHAR(255));
+
+
+CREATE TABLE Customer (Customerid INT PRIMARY KEY,
+                      FirstName VARCHAR(50),
+                      LastName VARCHAR(50),
+                      Company VARCHAR(50),
+                      Address VARCHAR(50),
+                      City VARCHAR(50),
+                      State VARCHAR(50),
+                      Country VARCHAR(50),
+                      PostalCode INT,
+                      Phone VARCHAR(30),
+                      Fax VARCHAR(30),
+                      Email VARCHAR(255),
+                      SupportRepid INT,
+                      FOREIGN KEY (SupportRepid) REFERENCES Employee(Employeeid));
+
+
+CREATE TABLE Invoice (Invoiceid INT PRIMARY KEY,
+                     Customerid INT,
+                     BillingAddress VARCHAR(50),
+                     BillingCity VARCHAR(50),
+                     BillingState VARCHAR(50),
+                     BillingCountry VARCHAR(50),
+                     BillingPostalCode INT,
+                     Total DECIMAL (10,2),
+                     FOREIGN KEY (Customerid) REFERENCES Customer(Customerid));
+
+
+
+CREATE TABLE InvoiceLine (InvoiceLineid INT PRIMARY KEY,
+                         Invoiceid INT,
+                         Trackid INT,
+                         UnitPrice DECIMAL(10,2),
+                         Quantity INT,
+                         FOREIGN KEY (Invoiceid) REFERENCES Invoice(Invoiceid),
+                         FOREIGN KEY (Trackid) REFERENCES Track(Trackid));
+
+
+
+===================================================
+
+			INSERT
+
+===================================================
+
+INSERT INTO artist
+VALUES
+(1,'The Beatles'),
+(2,'Led Zeppelin'),
+(3,'Pink Floyd')
+;
+
+
+
+INSERT INTO album
+VALUES
+(1,'Abbey Roa',1),
+(2,'Led Zeppelin IV',2),
+(3,'The Dark Side of the Moon',3);
+
+
+
+INSERT INTO mediatype
+VALUES
+(1,'MP3'),
+(2,'WAV'),
+(3,'FLAC');
+
+
+
+INSERT INTO genre
+VALUES
+(1,'Rock'),
+(2,'Pop'),
+(3,'Jazz');
+
+INSERT INTO track (TrackId, TrackName, AlbumId, MediaTypeId, GenreId, Composer, Milliseconds, Bytes, UnitPrice)
+VALUES
+(1,'Come Together',1,1,1,'John Lennon',259200,10485760,'1.29'),
+(2,'Stairway to Heaven',2,2,1, 'Jimmy Page',482400,20971520,'1.99'),
+(3,'Money',3,3,1,'Roger Waters',382200,15728640,'1.49');
+
+
+INSERT INTO Playlist
+VALUES
+(1,'Classic Rock'),
+(2,'Best of 70s');
+
+
+
+
+INSERT INTO playlisttrack
+VALUES
+(1, 1),
+(1, 2),
+(2, 3);
+
+
+INSERT INTO employee (EmployeeId, LastName, FirstName, Title, ReportsTo, BirthDate, HireDate, Address, City, State, Country, PostalCode, Phone, Fax, Email)
+VALUES
+(1,'Smith','John','Manager',NULL,'1970-01-01','2000-01-01','123 Main St','New York','NY','USA', 
+10001,'555-1234','555-5678','john.smith@example.com'),
+(2,'Doe','Jane','Sales Support',1,'1980-02-02','2010-02-02','456 Elm St','Los Angeles','CA','USA', 
+90001,'555-2345','555-6789','jane.doe@example.com');
+
+
+
+INSERT INTO customer (CustomerId,FirstName,LastName,Company,Address,City,State,Country,PostalCode,Phone,Fax,Email,SupportRepId)
+VALUES
+(1,'Alice','Wonderland','Wonderland Inc.','789 Oak St','Chicago','IL','USA',60601,'555-3456','555-
+7890','alice@example.com',2),
+(2,'Bob','Builder','Builder LLC','101 Pine St','San Francisco','CA','USA',94101,'555-4567','555-8901','bob@example.com',2);
+
+
+INSERT INTO invoice (InvoiceId, CustomerId, BillingAddress, BillingCity, BillingState, BillingCountry, BillingPostalCode, Total)
+VALUES
+(1,1,'789 Oak St','Chicago','IL','USA',60601,'10.00'),
+(2,2,'101 Pine St','San Francisco','CA','USA',94101,'20.00');
+
+
+
+INSERT INTO invoiceline (InvoiceLineId, InvoiceId, TrackId, UnitPrice,  Quantity)
+VALUES
+(1,1,1,'1.29',5),
+(2,2,2,'1.99',10),
+(3,2,3,'1.49',7);
+
+SELECT information_schema.TABLES.TABLE_NAME FROM information_schema.TABLES where table_schema='db_name' //Script gia na emfanisei ola ta tables se mia database.
